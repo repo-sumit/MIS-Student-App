@@ -1,0 +1,145 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-brand: #386AF6;
+  --color-brand-hover: #1339A3;
+  --color-brand-active: #2B3E8B;
+  --color-brand-disabled: #C3D2FC;
+  --color-brand-50: #EEF2FF;
+  --color-brand-100: #E0E7FF;
+  --color-brand-200: #C3D2FC;
+  --color-brand-300: #84A2F4;
+  --color-brand-400: #345CCC;
+
+  --color-ink: #0E0E0E;
+  --color-ink-muted: #7383A5;
+  --color-ink-subtle: #828996;
+  --color-ink-disabled: #999999;
+  --color-ink-inverse: #FFFFFF;
+
+  --color-surface: #FFFFFF;
+  --color-surface-app: #ECECEC;
+  --color-surface-subtle: #F4F6FA;
+
+  --color-line: #D5D8DF;
+  --color-line-subtle: #ECECEC;
+
+  --color-success: #00BA34;
+  --color-success-subtle: #D4F5DC;
+  --color-success-ink: #007B22;
+
+  --color-warning: #F8B200;
+  --color-warning-subtle: #FFF3CC;
+  --color-warning-ink: #9A6500;
+
+  --color-danger: #EB5757;
+  --color-danger-subtle: #FDEAEA;
+  --color-danger-ink: #C0392B;
+
+  --color-info: #84A2F4;
+  --color-info-subtle: #E0E7FF;
+  --color-info-ink: #345CCC;
+
+  --shell-width: 430px;
+  --header-h: 56px;
+  --tabbar-h: 64px;
+
+  --leading-default: 1.45;
+  --leading-devanagari: 1.55;
+}
+
+html, body {
+  height: 100%;
+}
+
+html {
+  background: var(--color-surface-app);
+}
+
+body {
+  color: var(--color-ink);
+  background: var(--color-surface-app);
+  font-family: var(--font-sans), Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: 0.01em;
+}
+
+html[lang="hi"] body {
+  font-family: var(--font-devanagari), Mukta, "Noto Sans Devanagari", system-ui, sans-serif;
+  line-height: var(--leading-devanagari);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+}
+
+input, textarea, select {
+  font-family: inherit;
+  color: inherit;
+}
+
+/* Tailwind layer base reset overrides */
+@layer base {
+  :focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(56, 106, 246, 0.22);
+    border-radius: 6px;
+  }
+  ::selection {
+    background: rgba(56, 106, 246, 0.18);
+  }
+}
+
+@layer components {
+  .app-shell {
+    @apply mx-auto w-full bg-surface min-h-[100dvh] relative;
+    max-width: var(--shell-width);
+    box-shadow: 0 0 0 1px rgba(14,14,14,0.04), 0 24px 60px rgba(14,14,14,0.06);
+  }
+  @media (min-width: 640px) {
+    .app-shell {
+      margin-top: 32px;
+      margin-bottom: 32px;
+      border-radius: 28px;
+      overflow: hidden;
+      min-height: calc(100dvh - 64px);
+    }
+    body { background: linear-gradient(180deg, #F5F7FB 0%, #ECECEC 100%); }
+  }
+  .pill {
+    border-radius: 9999px;
+  }
+  .text-eyebrow {
+    @apply text-[11px] uppercase tracking-[0.12em] font-semibold text-ink-muted;
+  }
+  .hairline {
+    @apply h-px w-full bg-line-subtle;
+  }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+  .scrollbar-none { scrollbar-width: none; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -300px 0; }
+  100% { background-position: 300px 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #ECECEC 0%, #F6F7F9 50%, #ECECEC 100%);
+  background-size: 600px 100%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: 8px;
+}
