@@ -22,7 +22,7 @@ export default function PreviewDocPage() {
   const doc = documents[dt];
   if (!doc) {
     return (
-      <PageShell title={t("documents.preview")} showBack showTabs={false}>
+      <PageShell title={t("documents.preview")} showBack showTabs={false} size="medium" variant="compact">
         <Card padded>
           <CardTitle>{t("documents.uploadTitle")}</CardTitle>
           <CardSubtitle>This document hasn't been uploaded yet.</CardSubtitle>
@@ -33,33 +33,30 @@ export default function PreviewDocPage() {
   }
 
   return (
-    <PageShell title={t("documents.previewTitle")} showBack showTabs={false}>
-      <div className="space-y-3">
-        <Card padded>
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex items-start gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-card bg-brand-50 text-brand"><FileText size={20} /></div>
-              <div>
-                <CardTitle>{t(`documents.${dt}`)}</CardTitle>
-                <CardSubtitle>{doc.fileName}</CardSubtitle>
-                <div className="mt-1 text-[12px] text-ink-subtle">{doc.sizeKb} KB · {doc.source === "digilocker" ? "DigiLocker" : "Device"}</div>
-              </div>
+    <PageShell title={t("documents.previewTitle")} showBack showTabs={false} size="medium" variant="compact">
+      <Card padded>
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-start gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-card bg-brand-50 text-brand"><FileText size={20} /></div>
+            <div>
+              <CardTitle>{t(`documents.${dt}`)}</CardTitle>
+              <CardSubtitle>{doc.fileName}</CardSubtitle>
+              <div className="mt-1 text-[12px] text-ink-subtle">{doc.sizeKb} KB · {doc.source === "digilocker" ? "DigiLocker" : "Device"}</div>
             </div>
-            <Badge tone={doc.status === "rejected" ? "danger" : doc.status === "verified" ? "success" : "info"} dot>
-              {t(`documents.${doc.status}`)}
-            </Badge>
           </div>
-        </Card>
-
-        <div className="aspect-[3/4] rounded-card bg-line-subtle/70 ring-1 ring-line flex items-center justify-center text-ink-subtle text-[13px]">
-          {/* document mock surface */}
-          <span>Document preview</span>
+          <Badge tone={doc.status === "rejected" ? "danger" : doc.status === "verified" ? "success" : "info"} dot>
+            {t(`documents.${doc.status}`)}
+          </Badge>
         </div>
+      </Card>
 
-        <div className="grid grid-cols-2 gap-2">
-          <Button variant="outline" leadingIcon={<RefreshCw size={14} />} onClick={() => setConfirm(true)}>{t("documents.replace")}</Button>
-          <Button onClick={() => router.push("/profile/step/4")}>{t("common.continue")}</Button>
-        </div>
+      <div className="mt-3 aspect-[3/4] rounded-card bg-line-subtle/70 ring-1 ring-line flex items-center justify-center text-ink-subtle text-[13px]">
+        Document preview
+      </div>
+
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        <Button variant="outline" leadingIcon={<RefreshCw size={14} />} onClick={() => setConfirm(true)}>{t("documents.replace")}</Button>
+        <Button onClick={() => router.push("/profile/step/4")}>{t("common.continue")}</Button>
       </div>
 
       <Modal

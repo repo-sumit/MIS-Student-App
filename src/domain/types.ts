@@ -11,8 +11,6 @@ export type StatusStep =
   | "allotted"
   | "admissionConfirmed";
 
-export type DemoStage = Exclude<StatusStep, "registered" | "profileComplete">;
-
 export type Stream = "arts" | "science-pcm" | "science-pcb" | "commerce" | "any";
 export type CourseType = "BA" | "BSc" | "BCom" | "BCA" | "BBA";
 
@@ -72,7 +70,6 @@ export interface CourseOffering {
 }
 
 export interface ProfileDraft {
-  // step 1
   fullName: string;
   fatherName: string;
   motherName: string;
@@ -82,29 +79,24 @@ export interface ProfileDraft {
   mobile: string;
   email: string;
   aadhaarMasked?: string;
-  // step 2
   address: string;
   district: District | "";
   state: string;
   pincode: string;
-  // step 3
   board: string;
   passingYear: string;
   rollNumber: string;
   stream: Stream | "";
   bestOfFive: string;
   resultStatus: ResultStatus | "";
-  // step 4
   category: Category | "";
   domicile: "hp" | "non-hp" | "";
   isSingleGirlChild: boolean;
   isPwd: boolean;
-  // step 5
   bankHolder: string;
   bankAccount: string;
   ifsc: string;
   bankName: string;
-  // meta
   completedSteps: number[];
   updatedAt: string;
 }
@@ -116,19 +108,32 @@ export interface EligibilityVerdict {
   reasons: string[];
 }
 
-export type RichApplicationStatus =
+export type ScrutinyOutcome = "verified" | "discrepancy" | "conditional";
+
+export type ApplicationLifecycle =
   | "draft"
   | "submitted"
-  | "underReview"
-  | "discrepancy"
+  | "underScrutiny"
+  | "discrepancyRaised"
+  | "discrepancyResolved"
   | "verified"
-  | "conditional"
-  | "rejected";
+  | "conditionallyVerified"
+  | "meritPublished"
+  | "allotted"
+  | "feePaid"
+  | "admissionConfirmed";
 
 export interface PreferenceItem {
   combinationId: string;
   collegeId: string;
   rankOrder: number;
+}
+
+export interface DiscrepancyEntry {
+  docType: DocType;
+  reason: string;
+  raisedAt: string;
+  deadlineAt: string;
 }
 
 export interface ApplicationDraft {
@@ -141,8 +146,19 @@ export interface ApplicationDraft {
   submittedAt?: string;
   applicationNumber?: string;
   applicationFeePaid?: boolean;
-  baseStatus?: "submitted" | "under_scrutiny" | "discrepancy_raised" | "verified" | "conditional" | "rejected";
-  discrepancies?: { docType: string; reason: string }[];
+
+  // Lifecycle timestamps (set by lifecycle engine)
+  scrutinyStartedAt?: string;
+  scrutinyOutcome?: ScrutinyOutcome;
+  scrutinyOutcomeAt?: string;
+  discrepancy?: DiscrepancyEntry;
+  discrepancyResolvedAt?: string;
+  verifiedAt?: string;
+  meritPublishedAt?: string;
+  meritViewedAt?: string;
+  allocationCreatedAt?: string;
+  feePaidAt?: string;
+  admissionConfirmedAt?: string;
 }
 
 export interface AllocationEntry {
@@ -168,6 +184,7 @@ export interface AllocationEntry {
   respondedAt?: string;
   rollNumber?: string;
   feeBreakup?: { label: Bilingual; amount: number }[];
+  responseDeadline?: string;
 }
 
 export type DocType =
@@ -193,10 +210,28 @@ export interface DocumentEntry {
 
 export interface EffectiveStudentStep {
   step: StatusStep;
-  realStep: StatusStep;
-  isDemo: boolean;
-  firstSubmittedCourseId?: string;
-  firstApplicationNumber?: string;
+  firstApplication?: ApplicationDraft;
   firstAllocation?: AllocationEntry;
-  firstMeritPublished?: boolean;
+  firstApplicationNumber?: string;
+  firstSubmittedCourseId?: string;
+}
+
+export type TimelineEntryKind =
+  | "registered"
+  | "profileCompleted"
+  | "applied"
+  | "submitted"
+  | "underScrutiny"
+  | "discrepancyRaised"
+  | "discrepancyResolved"
+  | "verified"
+  | "meritPublished"
+  | "allotted"
+  | "feePaid"
+  | "admissionConfirmed";
+
+export interface TimelineEntry {
+  kind: TimelineEntryKind;
+  at: string;
+  meta?: { docType?: DocType; reason?: string; collegeId?: string; rollNumber?: string };
 }

@@ -42,12 +42,9 @@
   --color-info-subtle: #E0E7FF;
   --color-info-ink: #345CCC;
 
-  --shell-width: 430px;
   --header-h: 56px;
+  --header-h-desktop: 64px;
   --tabbar-h: 64px;
-
-  --leading-default: 1.45;
-  --leading-devanagari: 1.55;
 }
 
 html, body {
@@ -68,9 +65,19 @@ body {
   letter-spacing: 0.01em;
 }
 
+/* Subtle ambient gradient on tablet+ — keeps mobile flat. */
+@media (min-width: 768px) {
+  body {
+    background:
+      radial-gradient(60rem 40rem at 100% -10%, rgba(56, 106, 246, 0.06), transparent 60%),
+      radial-gradient(50rem 36rem at -10% 100%, rgba(56, 106, 246, 0.05), transparent 60%),
+      #F1F4FA;
+  }
+}
+
 html[lang="hi"] body {
   font-family: var(--font-devanagari), Mukta, "Noto Sans Devanagari", system-ui, sans-serif;
-  line-height: var(--leading-devanagari);
+  line-height: 1.55;
 }
 
 * {
@@ -91,7 +98,6 @@ input, textarea, select {
   color: inherit;
 }
 
-/* Tailwind layer base reset overrides */
 @layer base {
   :focus-visible {
     outline: none;
@@ -104,24 +110,27 @@ input, textarea, select {
 }
 
 @layer components {
-  .app-shell {
-    @apply mx-auto w-full bg-surface min-h-[100dvh] relative;
-    max-width: var(--shell-width);
-    box-shadow: 0 0 0 1px rgba(14,14,14,0.04), 0 24px 60px rgba(14,14,14,0.06);
+  /* Responsive page containers */
+  .app-container {
+    @apply mx-auto w-full max-w-[1180px] px-4 sm:px-6 lg:px-10 xl:px-12;
   }
-  @media (min-width: 640px) {
-    .app-shell {
-      margin-top: 32px;
-      margin-bottom: 32px;
-      border-radius: 28px;
-      overflow: hidden;
-      min-height: calc(100dvh - 64px);
-    }
-    body { background: linear-gradient(180deg, #F5F7FB 0%, #ECECEC 100%); }
+  .form-container {
+    @apply mx-auto w-full max-w-[640px];
   }
-  .pill {
-    border-radius: 9999px;
+  .content-narrow {
+    @apply mx-auto w-full max-w-[720px];
   }
+  .content-wide {
+    @apply mx-auto w-full max-w-[1180px];
+  }
+  .dashboard-grid {
+    @apply grid gap-4 lg:grid-cols-12 lg:gap-6;
+  }
+  .card-grid {
+    @apply grid gap-3 sm:grid-cols-2 lg:grid-cols-3;
+  }
+
+  /* Eyebrow / hairline */
   .text-eyebrow {
     @apply text-[11px] uppercase tracking-[0.12em] font-semibold text-ink-muted;
   }
@@ -130,6 +139,15 @@ input, textarea, select {
   }
   .scrollbar-none::-webkit-scrollbar { display: none; }
   .scrollbar-none { scrollbar-width: none; }
+
+  /* Section wrappers */
+  .section {
+    @apply space-y-3;
+  }
+
+  .pill {
+    border-radius: 9999px;
+  }
 }
 
 @keyframes shimmer {
@@ -142,4 +160,12 @@ input, textarea, select {
   background-size: 600px 100%;
   animation: shimmer 1.5s infinite linear;
   border-radius: 8px;
+}
+
+/* Avoid awkward content padding overlap with bottom tab bar on mobile */
+.has-tabbar {
+  padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 24px);
+}
+@media (min-width: 1024px) {
+  .has-tabbar { padding-bottom: 64px; }
 }

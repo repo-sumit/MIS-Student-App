@@ -19,7 +19,15 @@ const mukta = Mukta({
 
 export const metadata: Metadata = {
   title: "HPU Admission",
-  description: "Undergraduate admissions to colleges affiliated to Himachal Pradesh University."
+  description: "Student admission portal for Himachal Pradesh University affiliated colleges",
+  applicationName: "HPU Admission",
+  icons: {
+    icon: [
+      { url: "/assets/HPU_Logo.png", type: "image/png" }
+    ],
+    shortcut: "/assets/HPU_Logo.png",
+    apple: "/assets/HPU_Logo.png"
+  }
 };
 
 export const viewport: Viewport = {

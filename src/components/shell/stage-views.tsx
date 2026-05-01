@@ -2,7 +2,15 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { CheckCircle2, ClipboardList, FileText, Trophy, Award, ChevronRight } from "lucide-react";
+import {
+  CheckCircle2,
+  ClipboardList,
+  FileText,
+  Trophy,
+  Award,
+  ChevronRight,
+  AlertTriangle
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardSubtitle, CardTitle } from "@/components/ui/card";
@@ -10,7 +18,8 @@ import { useLocale } from "@/providers/locale-provider";
 import { useEffectiveStudentStep } from "@/providers/use-effective-step";
 import { COLLEGES, OFFERINGS } from "@/domain/fixtures";
 import { formatINR } from "@/services/fee";
-import { DEMO_BOF, DEMO_RANK } from "@/services/status";
+import { lifecycleOf } from "@/services/lifecycle";
+// formatINR is also used in AllotmentView/ConfirmedView via inline references below
 import { useApplications } from "@/providers/applications-provider";
 
 function StageWrapper({
@@ -32,7 +41,7 @@ function StageWrapper({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.28 }}
       className={
-        "relative overflow-hidden rounded-hero p-5 text-white shadow-card " +
+        "relative overflow-hidden rounded-hero p-5 sm:p-6 text-white shadow-card " +
         (tone === "success"
           ? "bg-gradient-to-br from-success to-[#02953C]"
           : tone === "warning"
@@ -46,7 +55,7 @@ function StageWrapper({
         {eyebrow && (
           <div className="text-[10.5px] font-bold tracking-[0.16em] uppercase text-white/80">{eyebrow}</div>
         )}
-        <h2 className="mt-1 text-[20px] font-bold leading-snug">{title}</h2>
+        <h2 className="mt-1 text-[20px] sm:text-[22px] font-bold leading-snug">{title}</h2>
         {subtitle && <p className="mt-1 text-[13.5px] text-white/85 leading-relaxed">{subtitle}</p>}
         {children}
       </div>
@@ -113,14 +122,34 @@ export function SubmittedView() {
 export function ScrutinyView() {
   const { t, tList } = useLocale();
   const items = tList("scrutiny.items") as string[];
+  const { firstSubmittedCourseId } = useEffectiveStudentStep();
+  const { applications } = useApplications();
+  const app = firstSubmittedCourseId ? applications[firstSubmittedCourseId] : undefined;
+  const life = lifecycleOf(app);
+
+  if (life === "discrepancyRaised" && app?.discrepancy) {
+    return (
+      <div className="space-y-3">
+        <StageWrapper eyebrow={t("stages.underScrutiny")} title="Action needed on a document" subtitle="The college needs you to re-upload one document to continue scrutiny." tone="warning">
+          <div className="mt-3 inline-flex items-center gap-2 rounded-pill bg-white/15 px-3 py-1 text-[11.5px] font-semibold tracking-wide">
+            <AlertTriangle size={12} />
+            {t(`documents.${app.discrepancy.docType}`)}
+          </div>
+        </StageWrapper>
+        <Card padded>
+          <CardTitle>{t(`documents.${app.discrepancy.docType}`)}</CardTitle>
+          <CardSubtitle>{app.discrepancy.reason}</CardSubtitle>
+          <Link href={`/documents/rejection/${app.discrepancy.docType}`} className="block mt-3">
+            <Button block>{t("documents.reupload")}</Button>
+          </Link>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-3">
-      <StageWrapper
-        eyebrow={t("stages.underScrutiny")}
-        title={t("scrutiny.title")}
-        subtitle={t("scrutiny.body")}
-        tone="brand"
-      >
+      <StageWrapper eyebrow={t("stages.underScrutiny")} title={t("scrutiny.title")} subtitle={t("scrutiny.body")} tone="brand">
         <div className="mt-3 inline-flex items-center gap-2 rounded-pill bg-white/15 px-3 py-1 text-[11.5px] font-semibold tracking-wide">
           <span className="relative flex h-2 w-2">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/80" />
@@ -150,19 +179,23 @@ export function ScrutinyView() {
 export function MeritView() {
   const { t, pick } = useLocale();
   const { firstSubmittedCourseId } = useEffectiveStudentStep();
+  const { applications } = useApplications();
+  const app = firstSubmittedCourseId ? applications[firstSubmittedCourseId] : undefined;
   const offering = firstSubmittedCourseId ? OFFERINGS.find((o) => o.id === firstSubmittedCourseId) : undefined;
   const college = offering ? COLLEGES.find((c) => c.id === offering.collegeId) : undefined;
+  const rank = 47;
+  const bof = 87.4;
   return (
     <div className="space-y-3">
       <StageWrapper eyebrow={t("stages.meritPublished")} title={t("merit.publishedTitle")} subtitle={t("merit.publishedBody")} tone="brand">
         <div className="mt-4 grid grid-cols-2 gap-2">
           <div className="rounded-card bg-white/15 px-3 py-2.5 backdrop-blur">
             <div className="text-[10px] font-bold tracking-wider uppercase text-white/75">{t("merit.rankCard")}</div>
-            <div className="text-[22px] font-bold">#{DEMO_RANK}</div>
+            <div className="text-[22px] font-bold">#{rank}</div>
           </div>
           <div className="rounded-card bg-white/15 px-3 py-2.5 backdrop-blur">
             <div className="text-[10px] font-bold tracking-wider uppercase text-white/75">{t("merit.scoreCard")}</div>
-            <div className="text-[22px] font-bold">{DEMO_BOF}%</div>
+            <div className="text-[22px] font-bold">{bof}%</div>
           </div>
         </div>
       </StageWrapper>
@@ -178,6 +211,16 @@ export function MeritView() {
             </div>
             <Badge tone="success" dot>{t("stages.meritPublished")}</Badge>
           </div>
+          {firstSubmittedCourseId && !app?.meritViewedAt && (
+            <Link href="/merit-lookup" className="block mt-3">
+              <Button block>View merit result</Button>
+            </Link>
+          )}
+          {app?.meritViewedAt && firstSubmittedCourseId && (
+            <Link href={`/allotment/${firstSubmittedCourseId}`} className="block mt-3">
+              <Button block>Continue to allotment</Button>
+            </Link>
+          )}
         </Card>
       )}
     </div>

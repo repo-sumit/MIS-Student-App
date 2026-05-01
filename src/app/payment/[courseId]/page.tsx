@@ -9,8 +9,8 @@ import { PageShell } from "@/components/shell/page-shell";
 import { Card, CardDivider, CardSubtitle, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useLocale } from "@/providers/locale-provider";
-import { useEffectiveStudentStep } from "@/providers/use-effective-step";
-import { useAllotmentBridge } from "@/providers/bridge-providers";
+import { useApplications } from "@/providers/applications-provider";
+import { useAllocation } from "@/providers/allocation-provider";
 import { useToast } from "@/providers/toast-provider";
 import { COLLEGES } from "@/domain/fixtures";
 import { feeBreakup, formatINR } from "@/services/fee";
@@ -22,16 +22,16 @@ export default function PaymentPage() {
   const { courseId } = useParams<{ courseId: string }>();
   const router = useRouter();
   const { t, pick } = useLocale();
-  const { firstAllocation, step } = useEffectiveStudentStep();
-  const { allocations, setAllocation, setRollNumber } = useAllotmentBridge();
+  const { allocations, setAllocation, setRollNumber } = useAllocation();
+  const { markFeePaid, markAdmissionConfirmed } = useApplications();
   const toast = useToast();
-  const [stage, setStage] = useState<Stage>(step === "admissionConfirmed" ? "success" : "confirm");
+  const allocation = courseId ? allocations[courseId] : undefined;
+  const initialStage: Stage = allocation?.status === "admission_confirmed" || allocation?.status === "fee_paid" ? "success" : "confirm";
+  const [stage, setStage] = useState<Stage>(initialStage);
 
-  const realAlloc = courseId ? allocations[courseId] : undefined;
-  const alloc = realAlloc || (firstAllocation && firstAllocation.offer.courseId === courseId ? firstAllocation : undefined);
-  if (!alloc) {
+  if (!allocation || !courseId) {
     return (
-      <PageShell title={t("payment.title")} showBack>
+      <PageShell title={t("payment.title")} showBack size="medium" variant="compact" showTabs={false}>
         <Card padded>
           <CardTitle>{t("allotment.waitingTitle")}</CardTitle>
           <CardSubtitle>{t("allotment.waitingBody")}</CardSubtitle>
@@ -39,17 +39,19 @@ export default function PaymentPage() {
       </PageShell>
     );
   }
-  const college = COLLEGES.find((c) => c.id === alloc.offer.collegeId);
-  const breakup = alloc.feeBreakup || feeBreakup(alloc.offer.feeAmount);
+  const college = COLLEGES.find((c) => c.id === allocation.offer.collegeId);
+  const breakup = allocation.feeBreakup || feeBreakup(allocation.offer.feeAmount);
   const total = breakup.reduce((s, b) => s + b.amount, 0);
 
   function pay() {
     setStage("paying");
     setTimeout(() => {
-      if (realAlloc && courseId && college && alloc) {
-        const roll = alloc.rollNumber || generateRollNumber(college.code, alloc.rank);
-        setAllocation(courseId, { ...realAlloc, status: "fee_paid", feeBreakup: breakup, rollNumber: roll });
+      if (college && courseId) {
+        const roll = allocation?.rollNumber || generateRollNumber(college.code, allocation!.rank);
+        setAllocation(courseId, { ...allocation!, status: "fee_paid", feeBreakup: breakup, rollNumber: roll });
         setRollNumber(courseId, roll);
+        markFeePaid(courseId);
+        markAdmissionConfirmed(courseId);
       }
       toast.success(t("payment.successTitle"));
       setStage("success");
@@ -57,7 +59,7 @@ export default function PaymentPage() {
   }
 
   return (
-    <PageShell title={t("payment.title")} showBack showTabs={false}>
+    <PageShell title={t("payment.title")} showBack showTabs={false} size="medium" variant="compact">
       <AnimatePresence mode="wait">
         {stage === "confirm" && (
           <motion.div key="confirm" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-3">
@@ -111,7 +113,7 @@ export default function PaymentPage() {
               <p className="mt-1 text-[13.5px] text-white/85">{t("payment.successBody", { college: college ? pick(college.name) : "" })}</p>
               <div className="mt-4 rounded-card bg-white/15 px-3 py-2.5 backdrop-blur">
                 <div className="text-[10px] font-bold uppercase tracking-wider text-white/80">{t("payment.rollNumber")}</div>
-                <div className="text-[18px] font-bold tracking-wider">{alloc.rollNumber || "—"}</div>
+                <div className="text-[18px] font-bold tracking-wider">{allocation.rollNumber || "—"}</div>
               </div>
             </div>
 

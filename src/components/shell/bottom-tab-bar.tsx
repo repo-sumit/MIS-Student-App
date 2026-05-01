@@ -17,13 +17,13 @@ export function BottomTabBar() {
   ];
   return (
     <nav
-      className="sticky bottom-0 z-40 mt-auto bg-white/95 backdrop-blur-md border-t border-line-subtle"
+      className="fixed bottom-0 inset-x-0 z-40 lg:hidden bg-white/95 backdrop-blur-md border-t border-line-subtle"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <ul className="grid grid-cols-4">
+      <ul className="grid grid-cols-4 max-w-[640px] mx-auto">
         {items.map((it) => {
           const Icon = it.icon;
-          const active = it.match.some((m) => pathname.startsWith(m));
+          const active = it.match.some((m) => pathname === m || pathname.startsWith(m + "/"));
           return (
             <li key={it.href}>
               <Link

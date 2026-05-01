@@ -385,6 +385,19 @@
     "fix": "Fix now",
     "viewAllotment": "View allotment",
     "viewAdmission": "View admission",
+    "viewMerit": "View merit",
+    "subline": {
+      "draft": "Pick preferences and submit your application.",
+      "submitted": "Application submitted — heading to college scrutiny.",
+      "underScrutiny": "College is verifying your documents.",
+      "discrepancyRaised": "One document needs your attention.",
+      "discrepancyResolved": "Resubmitted — waiting for review.",
+      "verified": "Verified — waiting for the merit list.",
+      "meritPublished": "Merit list is out. View your rank.",
+      "allotted": "Seat allotted — respond before the deadline.",
+      "feePaid": "Admission fee received.",
+      "admissionConfirmed": "Admission confirmed."
+    },
     "discrepancyOpen": "{n} document needs attention",
     "discrepancyOpenPlural": "{n} documents need attention",
     "issuesTitle": "Resolve discrepancy",
@@ -506,6 +519,80 @@
       "title": "हिन्दी में उपलब्ध",
       "body": "Switch the app to Hindi from the language toggle in the header."
     }
+  },
+  "timeline": {
+    "registered": "Account registered",
+    "profileCompleted": "Profile completed",
+    "applied": "Application started",
+    "submitted": "Application submitted",
+    "underScrutiny": "Sent for college scrutiny",
+    "discrepancyRaised": "Document issue raised",
+    "discrepancyResolved": "Document resubmitted",
+    "verified": "Verified by college",
+    "meritPublished": "Merit list published",
+    "allotted": "Seat allotted",
+    "feePaid": "Admission fee received",
+    "admissionConfirmed": "Admission confirmed"
+  },
+  "next": {
+    "completeProfile": {
+      "title": "Complete your profile",
+      "body": "Five quick sections — personal, address, academics, claims and bank.",
+      "cta": "Continue profile"
+    },
+    "discoverCourses": {
+      "title": "Discover eligible courses",
+      "body": "Browse colleges and apply with one tap.",
+      "cta": "Discover courses"
+    },
+    "reviewApplication": {
+      "title": "Review and submit",
+      "body": "Confirm your preferences and pay the application fee.",
+      "cta": "Review application"
+    },
+    "trackScrutiny": {
+      "title": "Application is being reviewed",
+      "body": "The college is verifying your documents. Outcome usually within 3 working days.",
+      "cta": "Track status"
+    },
+    "fixDocument": {
+      "title": "We need a fresh document",
+      "body": "The college flagged one document. Re-upload to continue.",
+      "cta": "Fix document"
+    },
+    "checkMerit": {
+      "title": "Merit has been published",
+      "body": "View your rank and the round-1 result for your application.",
+      "cta": "View merit result"
+    },
+    "respondToOffer": {
+      "title": "Respond to your seat offer",
+      "body": "Freeze, float or decline within the deadline.",
+      "cta": "Open seat offer"
+    },
+    "payAdmissionFee": {
+      "title": "Pay the admission fee",
+      "body": "Complete payment to confirm your seat.",
+      "cta": "Pay admission fee"
+    },
+    "downloadAdmissionLetter": {
+      "title": "Admission confirmed",
+      "body": "Your roll number has been issued. Download your admission letter.",
+      "cta": "View admission"
+    }
+  },
+  "appStatus": {
+    "draft": "Draft",
+    "submitted": "Submitted",
+    "underScrutiny": "Under scrutiny",
+    "discrepancyRaised": "Action needed",
+    "discrepancyResolved": "Resubmitted",
+    "verified": "Verified",
+    "conditionallyVerified": "Conditional",
+    "meritPublished": "Merit published",
+    "allotted": "Seat allotted",
+    "feePaid": "Fee paid",
+    "admissionConfirmed": "Confirmed"
   },
   "errors": {
     "notFoundTitle": "Page not found",

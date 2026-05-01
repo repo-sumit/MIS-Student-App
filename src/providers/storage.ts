@@ -8,7 +8,7 @@ export const KEYS = {
   scrutiny: "hp-mis:scrutiny",
   merit: "hp-mis:merit",
   allocation: "hp-mis:allocation",
-  demoStage: "hp-mis:student-demo-stage"
+  meta: "hp-mis:meta"
 } as const;
 
 export function readJSON<T>(key: string, fallback: T): T {

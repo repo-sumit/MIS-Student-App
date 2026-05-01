@@ -5,27 +5,22 @@ import { ToastProvider } from "@/providers/toast-provider";
 import { ProfileProvider } from "@/providers/profile-provider";
 import { DocumentsProvider } from "@/providers/documents-provider";
 import { ApplicationsProvider } from "@/providers/applications-provider";
-import {
-  AllotmentBridgeProvider,
-  ScrutinyBridgeProvider
-} from "@/providers/bridge-providers";
-import { DemoProgressProvider } from "@/providers/demo-progress-provider";
+import { AllocationProvider } from "@/providers/allocation-provider";
+import { MetaProvider } from "@/providers/meta-provider";
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
     <LocaleProvider>
       <ToastProvider>
-        <ProfileProvider>
-          <DocumentsProvider>
-            <ApplicationsProvider>
-              <ScrutinyBridgeProvider>
-                <AllotmentBridgeProvider>
-                  <DemoProgressProvider>{children}</DemoProgressProvider>
-                </AllotmentBridgeProvider>
-              </ScrutinyBridgeProvider>
-            </ApplicationsProvider>
-          </DocumentsProvider>
-        </ProfileProvider>
+        <MetaProvider>
+          <ProfileProvider>
+            <DocumentsProvider>
+              <ApplicationsProvider>
+                <AllocationProvider>{children}</AllocationProvider>
+              </ApplicationsProvider>
+            </DocumentsProvider>
+          </ProfileProvider>
+        </MetaProvider>
       </ToastProvider>
     </LocaleProvider>
   );

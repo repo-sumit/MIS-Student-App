@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Search, MapPin } from "lucide-react";
+import { Search, MapPin, ChevronRight } from "lucide-react";
 import { PageShell } from "@/components/shell/page-shell";
-import { Card, CardSubtitle, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/field";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -47,53 +47,58 @@ export default function Discover() {
   }, [evaluations, q, district, stream, eligibility]);
 
   return (
-    <PageShell title={t("discover.title")}>
-      <div className="space-y-3">
-        <p className="text-[12.5px] text-ink-muted px-1 -mt-1">{t("discover.subtitle", { count: COLLEGES.length })}</p>
-
-        <div className="relative">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-muted" />
-          <Input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder={t("discover.search")}
-            className="pl-9"
-          />
+    <PageShell title={t("discover.title")} size="wide">
+      <div>
+        <div className="mb-4">
+          <h1 className="text-[22px] sm:text-[26px] font-bold text-ink">{t("discover.title")}</h1>
+          <p className="text-[13px] text-ink-muted">{t("discover.subtitle", { count: COLLEGES.length })}</p>
         </div>
 
-        <div className="flex gap-2 overflow-x-auto scrollbar-none -mx-4 px-4 pb-1">
-          <select
-            value={district}
-            onChange={(e) => setDistrict(e.target.value)}
-            className="rounded-pill bg-white border border-line px-3 py-1.5 text-[12.5px] font-semibold text-ink shrink-0"
-          >
-            <option value="all">{t("discover.filterDistrict")}: {t("discover.all")}</option>
-            {DISTRICTS.map((d) => (
-              <option key={d} value={d}>{d}</option>
-            ))}
-          </select>
-          <select
-            value={stream}
-            onChange={(e) => setStream(e.target.value as any)}
-            className="rounded-pill bg-white border border-line px-3 py-1.5 text-[12.5px] font-semibold text-ink shrink-0"
-          >
-            <option value="all">{t("discover.filterStream")}: {t("discover.all")}</option>
-            <option value="arts">Arts</option>
-            <option value="science-pcm">Science (PCM)</option>
-            <option value="science-pcb">Science (PCB)</option>
-            <option value="commerce">Commerce</option>
-          </select>
-        </div>
-
-        <SegmentedControl
-          value={eligibility}
-          onChange={(v) => setEligibility(v)}
-          options={[
-            { value: "all", label: t("discover.all") },
-            { value: "eligible", label: t("discover.eligible") },
-            { value: "conditional", label: t("discover.conditional") }
-          ]}
-        />
+        {/* Filter toolbar */}
+        <Card padded className="mb-4">
+          <div className="grid gap-2 md:grid-cols-12 md:items-center">
+            <div className="relative md:col-span-5">
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-muted" />
+              <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t("discover.search")} className="pl-9" />
+            </div>
+            <div className="md:col-span-3">
+              <select
+                value={district}
+                onChange={(e) => setDistrict(e.target.value)}
+                className="w-full h-12 rounded-pill border border-line bg-white px-4 text-[13.5px] font-semibold text-ink"
+              >
+                <option value="all">{t("discover.filterDistrict")}: {t("discover.all")}</option>
+                {DISTRICTS.map((d) => (
+                  <option key={d} value={d}>{d}</option>
+                ))}
+              </select>
+            </div>
+            <div className="md:col-span-4">
+              <select
+                value={stream}
+                onChange={(e) => setStream(e.target.value as any)}
+                className="w-full h-12 rounded-pill border border-line bg-white px-4 text-[13.5px] font-semibold text-ink"
+              >
+                <option value="all">{t("discover.filterStream")}: {t("discover.all")}</option>
+                <option value="arts">Arts</option>
+                <option value="science-pcm">Science (PCM)</option>
+                <option value="science-pcb">Science (PCB)</option>
+                <option value="commerce">Commerce</option>
+              </select>
+            </div>
+            <div className="md:col-span-12">
+              <SegmentedControl
+                value={eligibility}
+                onChange={(v) => setEligibility(v)}
+                options={[
+                  { value: "all", label: t("discover.all") },
+                  { value: "eligible", label: t("discover.eligible") },
+                  { value: "conditional", label: t("discover.conditional") }
+                ]}
+              />
+            </div>
+          </div>
+        </Card>
 
         {items.length === 0 ? (
           <EmptyState
@@ -102,16 +107,14 @@ export default function Discover() {
             action={<Button onClick={() => { setQ(""); setDistrict("all"); setStream("all"); setEligibility("all"); }}>Reset</Button>}
           />
         ) : (
-          <div className="space-y-2.5">
+          <div className="card-grid">
             {items.map(({ offering, verdict }) => {
               const college = COLLEGES.find((c) => c.id === offering.collegeId)!;
               const dist = HP_DISTANCE_MOCK[college.district] ?? 0;
               return (
-                <Card key={offering.id} padded>
+                <Card key={offering.id} padded className="flex flex-col">
                   <div className="flex items-start gap-3">
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-card bg-brand-50 text-brand text-[12px] font-bold">
-                      {college.code}
-                    </div>
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-card bg-brand-50 text-brand text-[12px] font-bold">{college.code}</div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0">
@@ -127,30 +130,30 @@ export default function Discover() {
                           <Badge tone="danger" dot>{t("discover.notEligible")}</Badge>
                         )}
                       </div>
-                      <div className="mt-2 flex flex-wrap gap-1.5 text-[11px]">
-                        <span className="inline-flex items-center gap-1 rounded-pill bg-line-subtle px-2 py-0.5 text-ink-muted">
-                          <MapPin size={10} /> {college.district} · {t("discover.distance", { km: dist })}
-                        </span>
-                        <span className="inline-flex items-center rounded-pill bg-line-subtle px-2 py-0.5 text-ink-muted">{t("discover.seats", { count: offering.totalSeats })}</span>
-                        <span className="inline-flex items-center rounded-pill bg-line-subtle px-2 py-0.5 text-ink-muted">{t("discover.fee", { amount: formatINR(offering.feeAmount) })}</span>
-                        <span className="inline-flex items-center rounded-pill bg-line-subtle px-2 py-0.5 text-ink-muted">{t("discover.minMarks", { marks: offering.minMarks })}</span>
-                      </div>
-                      {verdict.reasons.length > 0 && (
-                        <div className="mt-2 text-[11.5px] text-ink-muted leading-snug">
-                          {verdict.reasons.slice(0, 2).join(" · ")}
-                        </div>
-                      )}
-                      <div className="mt-2.5 flex gap-2">
-                        <Link href={`/discover/course/${offering.id}`} className="flex-1">
-                          <Button block size="sm" variant="outline">{t("discover.viewCourse")}</Button>
-                        </Link>
-                        {verdict.status !== "not_eligible" && (
-                          <Link href={`/apply/${offering.id}/preferences`} className="flex-1">
-                            <Button block size="sm">{t("discover.apply")}</Button>
-                          </Link>
-                        )}
-                      </div>
                     </div>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-1.5 text-[11px]">
+                    <span className="inline-flex items-center gap-1 rounded-pill bg-line-subtle px-2 py-0.5 text-ink-muted">
+                      <MapPin size={10} /> {college.district} · {t("discover.distance", { km: dist })}
+                    </span>
+                    <span className="inline-flex items-center rounded-pill bg-line-subtle px-2 py-0.5 text-ink-muted">{t("discover.seats", { count: offering.totalSeats })}</span>
+                    <span className="inline-flex items-center rounded-pill bg-line-subtle px-2 py-0.5 text-ink-muted">{t("discover.fee", { amount: formatINR(offering.feeAmount) })}</span>
+                    <span className="inline-flex items-center rounded-pill bg-line-subtle px-2 py-0.5 text-ink-muted">{t("discover.minMarks", { marks: offering.minMarks })}</span>
+                  </div>
+                  {verdict.reasons.length > 0 && (
+                    <div className="mt-2 text-[11.5px] text-ink-muted leading-snug">
+                      {verdict.reasons.slice(0, 2).join(" · ")}
+                    </div>
+                  )}
+                  <div className="mt-auto pt-3 flex gap-2">
+                    <Link href={`/discover/course/${offering.id}`} className="flex-1">
+                      <Button block size="sm" variant="outline" trailingIcon={<ChevronRight size={14} />}>{t("discover.viewCourse")}</Button>
+                    </Link>
+                    {verdict.status !== "not_eligible" && (
+                      <Link href={`/apply/${offering.id}/preferences`} className="flex-1">
+                        <Button block size="sm">{t("discover.apply")}</Button>
+                      </Link>
+                    )}
                   </div>
                 </Card>
               );

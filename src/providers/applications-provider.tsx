@@ -12,6 +12,7 @@ import type { ApplicationDraft, PreferenceItem } from "@/domain/types";
 import { KEYS, readJSON, writeJSON } from "./storage";
 import { generateApplicationNumber } from "@/services/status";
 import { OFFERINGS } from "@/domain/fixtures";
+import { maybeAdvanceLifecycle, resolveDiscrepancy } from "@/services/lifecycle";
 
 type AppMap = Record<string, ApplicationDraft>;
 
@@ -22,6 +23,11 @@ type ApplicationsCtx = {
   updatePreferences: (courseId: string, prefs: PreferenceItem[]) => void;
   setDeclaration: (courseId: string, accepted: boolean) => void;
   submit: (courseId: string) => ApplicationDraft;
+  resolveAppDiscrepancy: (courseId: string) => void;
+  acknowledgeMerit: (courseId: string) => void;
+  markAllocationCreated: (courseId: string) => void;
+  markFeePaid: (courseId: string) => void;
+  markAdmissionConfirmed: (courseId: string) => void;
   reset: () => void;
 };
 
@@ -102,8 +108,7 @@ export function ApplicationsProvider({ children }: { children: React.ReactNode }
           status: "submitted",
           submittedAt: new Date().toISOString(),
           applicationNumber: existing.applicationNumber ?? generateApplicationNumber(),
-          applicationFeePaid: true,
-          baseStatus: "submitted"
+          applicationFeePaid: true
         };
         const next = { ...curr, [courseId]: submitted };
         persist(next);
@@ -115,16 +120,135 @@ export function ApplicationsProvider({ children }: { children: React.ReactNode }
     [persist]
   );
 
+  const resolveAppDiscrepancy = useCallback(
+    (courseId: string) => {
+      setApplications((curr) => {
+        const existing = curr[courseId];
+        if (!existing || !existing.discrepancy) return curr;
+        const updated = resolveDiscrepancy(existing);
+        const next = { ...curr, [courseId]: updated };
+        persist(next);
+        return next;
+      });
+    },
+    [persist]
+  );
+
+  const acknowledgeMerit = useCallback(
+    (courseId: string) => {
+      setApplications((curr) => {
+        const existing = curr[courseId];
+        if (!existing || !existing.meritPublishedAt || existing.meritViewedAt) return curr;
+        const updated: ApplicationDraft = { ...existing, meritViewedAt: new Date().toISOString() };
+        const next = { ...curr, [courseId]: updated };
+        persist(next);
+        return next;
+      });
+    },
+    [persist]
+  );
+
+  const markAllocationCreated = useCallback(
+    (courseId: string) => {
+      setApplications((curr) => {
+        const existing = curr[courseId];
+        if (!existing || existing.allocationCreatedAt) return curr;
+        const updated: ApplicationDraft = { ...existing, allocationCreatedAt: new Date().toISOString() };
+        const next = { ...curr, [courseId]: updated };
+        persist(next);
+        return next;
+      });
+    },
+    [persist]
+  );
+
+  const markFeePaid = useCallback(
+    (courseId: string) => {
+      setApplications((curr) => {
+        const existing = curr[courseId];
+        if (!existing) return curr;
+        const updated: ApplicationDraft = { ...existing, feePaidAt: new Date().toISOString() };
+        const next = { ...curr, [courseId]: updated };
+        persist(next);
+        return next;
+      });
+    },
+    [persist]
+  );
+
+  const markAdmissionConfirmed = useCallback(
+    (courseId: string) => {
+      setApplications((curr) => {
+        const existing = curr[courseId];
+        if (!existing) return curr;
+        const updated: ApplicationDraft = { ...existing, admissionConfirmedAt: new Date().toISOString() };
+        const next = { ...curr, [courseId]: updated };
+        persist(next);
+        return next;
+      });
+    },
+    [persist]
+  );
+
   const reset = useCallback(() => {
     setApplications({});
     writeJSON(KEYS.applications, {});
   }, []);
 
+  // Auto-advance loop — runs every 4s on the client.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const tick = () => {
+      setApplications((curr) => {
+        const list = Object.values(curr);
+        if (list.length === 0) return curr;
+        const { changes } = maybeAdvanceLifecycle({ applications: list, now: Date.now() });
+        if (changes.length === 0) return curr;
+        const next = { ...curr };
+        changes.forEach((c) => {
+          next[c.courseId] = c;
+        });
+        persist(next);
+        return next;
+      });
+    };
+    const id = window.setInterval(tick, 4000);
+    // Run once immediately on mount.
+    tick();
+    return () => window.clearInterval(id);
+  }, [persist]);
+
   const list = useMemo(() => Object.values(applications), [applications]);
 
   const value = useMemo(
-    () => ({ applications, list, ensureDraft, updatePreferences, setDeclaration, submit, reset }),
-    [applications, list, ensureDraft, updatePreferences, setDeclaration, submit, reset]
+    () => ({
+      applications,
+      list,
+      ensureDraft,
+      updatePreferences,
+      setDeclaration,
+      submit,
+      resolveAppDiscrepancy,
+      acknowledgeMerit,
+      markAllocationCreated,
+      markFeePaid,
+      markAdmissionConfirmed,
+      reset
+    }),
+    [
+      applications,
+      list,
+      ensureDraft,
+      updatePreferences,
+      setDeclaration,
+      submit,
+      resolveAppDiscrepancy,
+      acknowledgeMerit,
+      markAllocationCreated,
+      markFeePaid,
+      markAdmissionConfirmed,
+      reset
+    ]
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

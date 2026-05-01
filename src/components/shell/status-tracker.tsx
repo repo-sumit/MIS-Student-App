@@ -2,7 +2,7 @@
 
 import { Check } from "lucide-react";
 import { useLocale } from "@/providers/locale-provider";
-import { STATUS_STEP_ORDER } from "@/services/status";
+import { STATUS_STEP_ORDER } from "@/services/lifecycle";
 import type { StatusStep } from "@/domain/types";
 import { cn } from "@/components/ui/cn";
 
@@ -16,12 +16,19 @@ const SHORT_LABEL: Record<StatusStep, { en: string; hi: string }> = {
   admissionConfirmed: { en: "Confirmed", hi: "पुष्ट" }
 };
 
-export function StatusTracker({ currentStep }: { currentStep: StatusStep }) {
-  const { locale } = useLocale();
+export function StatusTracker({ currentStep, subLabel }: { currentStep: StatusStep; subLabel?: string }) {
+  const { locale, t } = useLocale();
   const idx = STATUS_STEP_ORDER.indexOf(currentStep);
 
   return (
-    <div className="px-1 py-1">
+    <div>
+      <div className="flex items-baseline justify-between mb-3">
+        <div>
+          <div className="text-[10px] uppercase tracking-[0.16em] font-bold text-ink-muted">Application status</div>
+          <div className="text-[14px] font-bold text-ink">{t(`stages.${currentStep}`)}</div>
+        </div>
+        {subLabel && <div className="text-[11.5px] text-ink-subtle">{subLabel}</div>}
+      </div>
       <div className="relative">
         <div className="absolute inset-x-3 top-3.5 h-0.5 bg-line" />
         <div
@@ -44,7 +51,7 @@ export function StatusTracker({ currentStep }: { currentStep: StatusStep }) {
                 >
                   {i < idx ? <Check size={13} strokeWidth={3} /> : i + 1}
                 </span>
-                <span className={cn("text-[9.5px] leading-tight font-semibold text-center w-full", reached ? "text-ink" : "text-ink-subtle")}>
+                <span className={cn("text-[9.5px] sm:text-[10.5px] leading-tight font-semibold text-center w-full", reached ? "text-ink" : "text-ink-subtle")}>
                   {label}
                 </span>
               </li>

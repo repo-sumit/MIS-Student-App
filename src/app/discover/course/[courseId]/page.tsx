@@ -20,7 +20,7 @@ export default function CourseDetail() {
   const offering = OFFERINGS.find((o) => o.id === params.courseId);
   if (!offering) {
     return (
-      <PageShell title={t("errors.notFoundTitle")} showBack>
+      <PageShell title={t("errors.notFoundTitle")} showBack size="medium">
         <Card padded>
           <CardTitle>{t("errors.notFoundTitle")}</CardTitle>
           <CardSubtitle>{t("errors.notFoundBody")}</CardSubtitle>
@@ -33,60 +33,64 @@ export default function CourseDetail() {
   const combos = offering.combinations.map((id) => COMBINATIONS.find((c) => c.id === id)).filter(Boolean) as typeof COMBINATIONS;
 
   return (
-    <PageShell title={offering.courseCode} showBack>
-      <div className="space-y-3">
-        <Card padded>
-          <div className="flex items-start gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-card bg-brand-50 text-brand text-[12px] font-bold">{college.code}</div>
-            <div className="min-w-0 flex-1">
-              <div className="text-[10px] uppercase tracking-wider font-semibold text-ink-muted">{offering.courseCode}</div>
-              <div className="text-[16px] font-bold text-ink leading-snug">{pick(offering.name)}</div>
-              <div className="text-[12px] text-ink-muted truncate">{pick(college.name)} · {college.district}</div>
-            </div>
-          </div>
-          <p className="mt-3 text-[13px] text-ink-muted leading-relaxed">{pick(offering.description)}</p>
-          {verdict.reasons.length > 0 && (
-            <>
-              <CardDivider />
-              <div className="flex items-center gap-2 flex-wrap">
-                <Badge tone={verdict.status === "eligible" ? "success" : verdict.status === "conditional" ? "warning" : "danger"} dot>
-                  {t(`discover.${verdict.status === "not_eligible" ? "notEligible" : verdict.status}`)}
-                </Badge>
-                <span className="text-[12px] text-ink-muted">{verdict.reasons[0]}</span>
+    <PageShell title={offering.courseCode} showBack size="wide">
+      <div className="grid gap-4 lg:grid-cols-12">
+        <div className="lg:col-span-7 xl:col-span-8 space-y-3">
+          <Card padded>
+            <div className="flex items-start gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-card bg-brand-50 text-brand text-[12px] font-bold">{college.code}</div>
+              <div className="min-w-0 flex-1">
+                <div className="text-[10px] uppercase tracking-wider font-semibold text-ink-muted">{offering.courseCode}</div>
+                <div className="text-[18px] sm:text-[20px] font-bold text-ink leading-snug">{pick(offering.name)}</div>
+                <div className="text-[12px] text-ink-muted truncate">{pick(college.name)} · {college.district}</div>
               </div>
-            </>
-          )}
-        </Card>
+            </div>
+            <p className="mt-3 text-[13.5px] text-ink-muted leading-relaxed">{pick(offering.description)}</p>
+            {verdict.reasons.length > 0 && (
+              <>
+                <CardDivider />
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Badge tone={verdict.status === "eligible" ? "success" : verdict.status === "conditional" ? "warning" : "danger"} dot>
+                    {t(`discover.${verdict.status === "not_eligible" ? "notEligible" : verdict.status}`)}
+                  </Badge>
+                  <span className="text-[12px] text-ink-muted">{verdict.reasons[0]}</span>
+                </div>
+              </>
+            )}
+          </Card>
 
-        <div className="grid grid-cols-2 gap-2">
-          <Stat icon={<Clock size={14} />} label={t("course.duration")} value={t("course.years", { n: offering.durationYears })} />
-          <Stat icon={<Users size={14} />} label={t("course.totalSeats")} value={String(offering.totalSeats)} />
-          <Stat icon={<GraduationCap size={14} />} label={t("course.minMarks")} value={`${offering.minMarks}%`} />
-          <Stat icon={<BadgeIndianRupee size={14} />} label={t("course.feeAnnual")} value={formatINR(offering.feeAmount)} />
+          <Card padded>
+            <CardTitle>{t("course.combinations")}</CardTitle>
+            <div className="mt-3 grid gap-2 sm:grid-cols-2">
+              {combos.map((c) => (
+                <div key={c.id} className="rounded-card bg-line-subtle/60 px-3 py-2.5">
+                  <div className="flex items-center gap-2">
+                    <Layers size={14} className="text-brand" />
+                    <span className="text-[13px] font-semibold text-ink">{pick(c.label)}</span>
+                  </div>
+                  <div className="mt-1 text-[11.5px] text-ink-muted">{c.subjects.join(" · ")}</div>
+                </div>
+              ))}
+            </div>
+          </Card>
         </div>
 
-        <Card padded>
-          <CardTitle>{t("course.combinations")}</CardTitle>
-          <div className="mt-3 space-y-2">
-            {combos.map((c) => (
-              <div key={c.id} className="rounded-card bg-line-subtle/60 px-3 py-2.5">
-                <div className="flex items-center gap-2">
-                  <Layers size={14} className="text-brand" />
-                  <span className="text-[13px] font-semibold text-ink">{pick(c.label)}</span>
-                </div>
-                <div className="mt-1 text-[11.5px] text-ink-muted">{c.subjects.join(" · ")}</div>
-              </div>
-            ))}
+        <aside className="lg:col-span-5 xl:col-span-4 space-y-3">
+          <div className="grid grid-cols-2 gap-2">
+            <Stat icon={<Clock size={14} />} label={t("course.duration")} value={t("course.years", { n: offering.durationYears })} />
+            <Stat icon={<Users size={14} />} label={t("course.totalSeats")} value={String(offering.totalSeats)} />
+            <Stat icon={<GraduationCap size={14} />} label={t("course.minMarks")} value={`${offering.minMarks}%`} />
+            <Stat icon={<BadgeIndianRupee size={14} />} label={t("course.feeAnnual")} value={formatINR(offering.feeAmount)} />
           </div>
-        </Card>
 
-        {verdict.status !== "not_eligible" ? (
-          <Link href={`/apply/${offering.id}/preferences`} className="block">
-            <Button block size="lg">{t("course.applyCta")}</Button>
-          </Link>
-        ) : (
-          <Button block size="lg" disabled>{t("discover.notEligible")}</Button>
-        )}
+          {verdict.status !== "not_eligible" ? (
+            <Link href={`/apply/${offering.id}/preferences`} className="block">
+              <Button block size="lg">{t("course.applyCta")}</Button>
+            </Link>
+          ) : (
+            <Button block size="lg" disabled>{t("discover.notEligible")}</Button>
+          )}
+        </aside>
       </div>
     </PageShell>
   );

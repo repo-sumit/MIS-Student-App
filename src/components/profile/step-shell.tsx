@@ -1,14 +1,26 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronLeft } from "lucide-react";
+import Link from "next/link";
+import { ChevronLeft, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Stepper } from "@/components/ui/stepper";
 import { LanguageSwitcher } from "@/components/shell/language-switcher";
+import { HpuLogo } from "@/components/shell/hpu-logo";
 import { useLocale } from "@/providers/locale-provider";
 import { useProfile } from "@/providers/profile-provider";
+import { useMeta } from "@/providers/meta-provider";
 import { useToast } from "@/providers/toast-provider";
+import { hasEnoughProfile } from "@/services/status";
+import { cn } from "@/components/ui/cn";
+
+const STEP_LABELS: { key: number; label: string }[] = [
+  { key: 1, label: "Personal" },
+  { key: 2, label: "Address" },
+  { key: 3, label: "Academics" },
+  { key: 4, label: "Claims" },
+  { key: 5, label: "Bank" }
+];
 
 export function ProfileStepShell({
   stepNumber,
@@ -27,7 +39,8 @@ export function ProfileStepShell({
 }) {
   const router = useRouter();
   const { t } = useLocale();
-  const { markStep } = useProfile();
+  const { profile, markStep } = useProfile();
+  const { markProfileCompleted } = useMeta();
   const toast = useToast();
 
   function next() {
@@ -38,9 +51,14 @@ export function ProfileStepShell({
     }
     markStep(stepNumber);
     if (stepNumber === 5) {
+      if (hasEnoughProfile(profile)) markProfileCompleted();
       toast.success(t("profile.completeToast"));
       router.push("/dashboard");
     } else {
+      // The hasEnoughProfile check considers step 4 as the threshold; mark profile completed when reached.
+      if (stepNumber === 4 && hasEnoughProfile({ ...profile, completedSteps: Array.from(new Set([...profile.completedSteps, stepNumber])) })) {
+        markProfileCompleted();
+      }
       toast.success(t("profile.savedToast"));
       router.push(`/profile/step/${stepNumber + 1}`);
     }
@@ -52,34 +70,63 @@ export function ProfileStepShell({
   }
 
   return (
-    <div className="app-shell flex min-h-[100dvh] flex-col bg-surface-app">
-      <header className="sticky top-0 z-30 bg-white border-b border-line-subtle">
-        <div className="flex items-center justify-between px-3 pt-3">
-          <button onClick={back} className="inline-flex h-10 w-10 items-center justify-center rounded-full text-ink hover:bg-line-subtle">
-            <ChevronLeft size={20} />
+    <div className="min-h-[100dvh] bg-surface-app/40">
+      <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-line-subtle">
+        <div className="app-container flex items-center justify-between h-14 lg:h-16">
+          <button onClick={back} className="inline-flex h-10 items-center gap-1 rounded-pill px-2 text-[13px] font-semibold text-ink-muted hover:text-ink hover:bg-line-subtle">
+            <ChevronLeft size={18} /> {t("common.back")}
           </button>
-          <div className="text-[12px] font-semibold text-ink-muted">{t("profile.stepLabel", { n: stepNumber })}</div>
+          <Link href="/dashboard" className="flex items-center gap-2">
+            <HpuLogo size={26} />
+            <span className="hidden md:inline text-[13.5px] font-bold text-ink">{t("profile.title")}</span>
+          </Link>
           <LanguageSwitcher />
         </div>
-        <div className="px-4 pb-3 pt-1">
+        <div className="app-container py-3 lg:hidden">
           <Stepper current={stepNumber} total={5} />
         </div>
       </header>
 
-      <main className="flex-1 px-4 pt-4 pb-28">
-        <h1 className="text-[20px] font-bold text-ink">{title}</h1>
-        <p className="text-[13px] text-ink-muted mt-0.5">{subtitle}</p>
-        <div className="mt-4 space-y-4">{children}</div>
-      </main>
+      <main className="app-container py-5 lg:py-10">
+        <div className="grid gap-6 lg:grid-cols-12">
+          {/* Sidebar progress on desktop */}
+          <aside className="hidden lg:block lg:col-span-4 xl:col-span-3 lg:sticky lg:top-24 lg:self-start">
+            <div className="rounded-card bg-white ring-1 ring-line shadow-card p-4">
+              <div className="text-eyebrow">{t("profile.title")}</div>
+              <div className="mt-1 text-[14px] font-bold text-ink">{t("profile.stepLabel", { n: stepNumber })}</div>
+              <ol className="mt-4 space-y-2">
+                {STEP_LABELS.map((s) => {
+                  const reached = s.key < stepNumber || profile.completedSteps.includes(s.key);
+                  const active = s.key === stepNumber;
+                  return (
+                    <li key={s.key} className={cn("flex items-center gap-2 text-[13px] font-semibold", active ? "text-brand" : reached ? "text-ink" : "text-ink-subtle")}>
+                      <span className={cn("flex h-6 w-6 items-center justify-center rounded-full border", active ? "border-brand bg-brand text-white" : reached ? "border-success bg-success text-white" : "border-line bg-white text-ink-subtle")}>
+                        {reached && !active ? <Check size={12} strokeWidth={3} /> : s.key}
+                      </span>
+                      {s.label}
+                    </li>
+                  );
+                })}
+              </ol>
+            </div>
+          </aside>
 
-      <footer className="sticky bottom-0 bg-white border-t border-line-subtle px-4 py-3" style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 12px)" }}>
-        <div className="flex gap-2">
-          <Button variant="secondary" onClick={back}>{t("common.back")}</Button>
-          <Button block onClick={next} disabled={!isValid}>
-            {stepNumber === 5 ? t("common.done") : t("common.continue")}
-          </Button>
+          <section className="lg:col-span-8 xl:col-span-9">
+            <div className="form-container">
+              <h1 className="text-[22px] lg:text-[26px] font-bold text-ink">{title}</h1>
+              <p className="text-[13.5px] text-ink-muted mt-1">{subtitle}</p>
+              <div className="mt-5 space-y-4">{children}</div>
+
+              <div className="mt-6 flex items-center gap-2">
+                <Button variant="secondary" onClick={back}>{t("common.back")}</Button>
+                <Button block onClick={next} disabled={!isValid}>
+                  {stepNumber === 5 ? t("common.done") : t("common.continue")}
+                </Button>
+              </div>
+            </div>
+          </section>
         </div>
-      </footer>
+      </main>
     </div>
   );
 }
