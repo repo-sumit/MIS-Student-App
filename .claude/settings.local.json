@@ -4,7 +4,10 @@
       "Read(//c/Users/sumit/Downloads/HP HE MIS/**)",
       "Bash(npm install *)",
       "Bash(npx tsc *)",
-      "Bash(npx next *)"
+      "Bash(npx next *)",
+      "Bash(npm run *)",
+      "Bash(node -e \"const en = require\\('./src/i18n/en.json'\\); const hi = require\\('./src/i18n/hi.json'\\); console.log\\('en.merit.title:', en.merit.title\\); console.log\\('en.merit.publishedTitle:', en.merit.publishedTitle\\); console.log\\('hi.merit.publishedTitle:', hi.merit.publishedTitle\\); console.log\\('en.next.floatPending.cta:', en.next.floatPending.cta\\);\")",
+      "Bash(node -e ' *)"
     ]
   }
 }

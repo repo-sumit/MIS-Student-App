@@ -57,7 +57,14 @@
     "linkDates": "Important dates",
     "linkHowItWorks": "How it works",
     "linkLanguage": "Change language",
-    "linkHelp": "Helpdesk"
+    "linkHelp": "Helpdesk",
+    "previewTitle": "Your admission journey",
+    "previewLive": "Live",
+    "preview1": { "title": "Register and complete profile", "body": "Five quick sections with autosave." },
+    "preview2": { "title": "Discover eligible courses", "body": "Live eligibility against 12 colleges." },
+    "preview3": { "title": "Apply and rank preferences", "body": "Up to 6 BA / 3 BSc preferences." },
+    "preview4": { "title": "View merit and respond", "body": "Freeze, float, or decline your offer." },
+    "preview5": { "title": "Pay fee and confirm admission", "body": "Roll number issued on success." }
   },
   "register": {
     "title": "Create your account",
@@ -84,8 +91,7 @@
     "password": "Password",
     "submit": "Sign in",
     "forgot": "Forgot password?",
-    "registerInstead": "New here? Create an account",
-    "demoNote": "For this demo, any non-empty values will sign you in."
+    "registerInstead": "New here? Create an account"
   },
   "forgot": {
     "title": "Reset password",
@@ -138,7 +144,7 @@
       { "q": "Can I apply to multiple colleges?", "a": "Yes. BA allows up to 6 preferences and BSc up to 3 preferences across colleges." },
       { "q": "When do I pay the admission fee?", "a": "Only after a seat is allotted. Until then, you only pay the small application fee." },
       { "q": "What if my document is rejected?", "a": "You'll see a notification on your dashboard with the reason and a link to re-upload." },
-      { "q": "Is my data safe?", "a": "Your data is stored locally on your device for this demo and is never shared without consent." }
+      { "q": "Is my data safe?", "a": "Your data is stored on your device and is never shared without your consent." }
     ]
   },
   "merit": {
@@ -154,7 +160,13 @@
     "course": "Course",
     "firstPref": "First preference",
     "noResult": "No result found for that application number.",
-    "demoNote": "Once merit is published, your result card will appear below."
+    "publishedNote": "Once merit is published, your result card will appear below.",
+    "publishedTitle": "Merit has been published",
+    "publishedBody": "Your rank is final for this round of allotment.",
+    "rankCard": "Your rank",
+    "scoreCard": "Best of five",
+    "categoryCard": "Category",
+    "courseCard": "Applied course"
   },
   "dashboard": {
     "greeting": "Hello, {name}",
@@ -185,16 +197,11 @@
     "qlApplications": "My applications",
     "qlHelp": "Help",
     "updatesTitle": "Recent updates",
-    "operator": {
-      "eyebrow": "Operator progression",
-      "badge": "Override active",
-      "current": "Current stage",
-      "next": "Next stage",
-      "advance": "Advance to {stage}",
-      "complete": "Journey complete",
-      "reset": "Reset",
-      "subtitle": "For demo only — does not affect real application data."
-    },
+    "nextStep": "Next step",
+    "activeApplication": "Active application",
+    "applicationStatus": "Application status",
+    "stageLabel": "Stage",
+    "noActiveApplication": "You haven't submitted an application yet. Pick a course to get started.",
     "discrepancyTitle": "We need a small fix",
     "discrepancyBody": "{count} document needs your attention before scrutiny can finish.",
     "discrepancyBodyPlural": "{count} documents need your attention before scrutiny can finish.",
@@ -233,14 +240,6 @@
       "Domicile and category claim verified",
       "Photo and signature accepted"
     ]
-  },
-  "merit": {
-    "publishedTitle": "Merit has been published",
-    "publishedBody": "Your rank is final for this round of allotment.",
-    "rankCard": "Your rank",
-    "scoreCard": "Best of five",
-    "categoryCard": "Category",
-    "courseCard": "Applied course"
   },
   "allotment": {
     "title": "A seat has been allotted",
@@ -520,10 +519,16 @@
       "body": "Switch the app to Hindi from the language toggle in the header."
     }
   },
+  "time": {
+    "justNow": "just now",
+    "minAgo": "{n} min ago",
+    "hrAgo": "{n} hr ago",
+    "dayAgo": "{n} day ago",
+    "daysAgo": "{n} days ago"
+  },
   "timeline": {
     "registered": "Account registered",
     "profileCompleted": "Profile completed",
-    "applied": "Application started",
     "submitted": "Application submitted",
     "underScrutiny": "Sent for college scrutiny",
     "discrepancyRaised": "Document issue raised",
@@ -579,6 +584,16 @@
       "title": "Admission confirmed",
       "body": "Your roll number has been issued. Download your admission letter.",
       "cta": "View admission"
+    },
+    "floatPending": {
+      "title": "Waiting for an upgrade",
+      "body": "You floated this offer. We'll notify you if a higher-preference seat opens.",
+      "cta": "Track applications"
+    },
+    "declined": {
+      "title": "Offer declined",
+      "body": "You declined this round's seat. You can apply to another open course.",
+      "cta": "Discover courses"
     }
   },
   "appStatus": {

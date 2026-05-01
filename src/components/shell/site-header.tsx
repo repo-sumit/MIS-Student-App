@@ -8,12 +8,12 @@ import { HpuLogo } from "./hpu-logo";
 import { useLocale } from "@/providers/locale-provider";
 import { cn } from "@/components/ui/cn";
 
-const NAV_LINKS: { href: string; key: string }[] = [
-  { href: "/dashboard", key: "tabs.home" },
-  { href: "/discover", key: "tabs.apply" },
-  { href: "/applications", key: "tabs.applications" },
-  { href: "/dates", key: "landing.linkDates" },
-  { href: "/help", key: "landing.linkHelp" }
+const NAV_LINKS: { href: string; key: string; matches: string[] }[] = [
+  { href: "/dashboard", key: "tabs.home", matches: ["/dashboard"] },
+  { href: "/discover", key: "tabs.apply", matches: ["/discover", "/apply"] },
+  { href: "/applications", key: "tabs.applications", matches: ["/applications", "/allotment", "/payment", "/documents"] },
+  { href: "/dates", key: "landing.linkDates", matches: ["/dates"] },
+  { href: "/help", key: "landing.linkHelp", matches: ["/help"] }
 ];
 
 export function SiteHeader({
@@ -61,7 +61,7 @@ export function SiteHeader({
               {title && <h1 className="md:hidden text-[15px] font-bold text-ink truncate">{title}</h1>}
               <nav className="hidden md:flex items-center gap-1 md:ml-6">
                 {NAV_LINKS.map((l) => {
-                  const active = pathname === l.href || pathname.startsWith(l.href + "/");
+                  const active = l.matches.some((m) => pathname === m || pathname.startsWith(m + "/"));
                   return (
                     <Link
                       key={l.href}

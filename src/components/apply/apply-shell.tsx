@@ -57,7 +57,7 @@ export function ApplyShell({
           <aside className="hidden lg:block lg:col-span-4 xl:col-span-3 lg:sticky lg:top-24 lg:self-start">
             <div className="rounded-card bg-white ring-1 ring-line shadow-card p-4">
               <div className="text-eyebrow">{t("apply.hubTitle")}</div>
-              <div className="mt-1 text-[14px] font-bold text-ink">Step {step} of {total}</div>
+              <div className="mt-1 text-[14px] font-bold text-ink">{t("common.step")} {step} {t("common.of")} {total}</div>
               <ol className="mt-4 space-y-2">
                 {APPLY_STEPS.map((s) => {
                   const reached = s.key < step;

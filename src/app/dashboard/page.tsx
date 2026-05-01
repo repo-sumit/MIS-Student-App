@@ -63,12 +63,12 @@ export default function Dashboard() {
   return (
     <PageShell size="dashboard">
       <div className="space-y-4 lg:space-y-6">
-        <div className="flex items-baseline justify-between gap-3">
-          <div>
-            <h1 className="text-[22px] sm:text-[26px] font-bold text-ink">{greeting}</h1>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0">
+            <h1 className="text-[22px] sm:text-[26px] font-bold text-ink truncate">{greeting}</h1>
             <p className="text-[13px] sm:text-[14px] text-ink-muted">{t("dashboard.subgreeting")}</p>
           </div>
-          <Badge tone="brand" dot>{t(`stages.${eff.step}`)}</Badge>
+          <Badge tone="brand" dot className="shrink-0">{t(`stages.${eff.step}`)}</Badge>
         </div>
 
         {showDiscrepancyBanner && discCourseId && (

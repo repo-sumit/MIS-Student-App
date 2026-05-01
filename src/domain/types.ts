@@ -219,7 +219,6 @@ export interface EffectiveStudentStep {
 export type TimelineEntryKind =
   | "registered"
   | "profileCompleted"
-  | "applied"
   | "submitted"
   | "underScrutiny"
   | "discrepancyRaised"

@@ -130,7 +130,7 @@ export default function MeritLookup() {
                 </Card>
               )}
               {!searched && (
-                <p className="mt-4 text-[12px] text-ink-subtle">{t("merit.demoNote")}</p>
+                <p className="mt-4 text-[12px] text-ink-subtle">{t("merit.publishedNote")}</p>
               )}
             </>
           )}

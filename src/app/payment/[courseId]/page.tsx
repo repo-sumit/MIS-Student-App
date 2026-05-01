@@ -123,8 +123,20 @@ export default function PaymentPage() {
             </Card>
 
             <div className="grid grid-cols-2 gap-2">
-              <Button variant="outline" leadingIcon={<FileText size={14} />}>{t("payment.downloadReceipt")}</Button>
-              <Button variant="outline" leadingIcon={<Trophy size={14} />}>{t("payment.downloadLetter")}</Button>
+              <Button
+                variant="outline"
+                leadingIcon={<FileText size={14} />}
+                onClick={() => toast.info(t("payment.downloadReceipt"), "A signed copy will be sent to your registered email.")}
+              >
+                {t("payment.downloadReceipt")}
+              </Button>
+              <Button
+                variant="outline"
+                leadingIcon={<Trophy size={14} />}
+                onClick={() => toast.info(t("payment.downloadLetter"), "A signed copy will be sent to your registered email.")}
+              >
+                {t("payment.downloadLetter")}
+              </Button>
             </div>
             <Link href="/dashboard"><Button block leadingIcon={<ChevronLeft size={14} />}>{t("payment.back")}</Button></Link>
           </motion.div>

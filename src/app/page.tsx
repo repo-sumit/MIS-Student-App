@@ -95,25 +95,25 @@ export default function LandingPage() {
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <HpuLogo size={28} />
-                    <span className="text-[12.5px] font-bold text-ink">Your admission journey</span>
+                    <span className="text-[12.5px] font-bold text-ink">{t("landing.previewTitle")}</span>
                   </div>
-                  <span className="text-[10px] uppercase tracking-wider font-bold text-brand-400 bg-brand-50 rounded-pill px-2 py-0.5">Live</span>
+                  <span className="text-[10px] uppercase tracking-wider font-bold text-brand-400 bg-brand-50 rounded-pill px-2 py-0.5">{t("landing.previewLive")}</span>
                 </div>
                 <ul className="space-y-2.5">
                   {[
-                    { Icon: GraduationCap, title: "Register and complete profile", body: "Five quick sections with autosave." },
-                    { Icon: Compass, title: "Discover eligible courses", body: "Live eligibility against 12 colleges." },
-                    { Icon: ListChecks, title: "Apply and rank preferences", body: "Up to 6 BA / 3 BSc preferences." },
-                    { Icon: Trophy, title: "View merit and respond", body: "Freeze, float, or decline your offer." },
-                    { Icon: Award, title: "Pay fee and confirm admission", body: "Roll number issued on success." }
-                  ].map(({ Icon, title, body }, i) => (
-                    <li key={i} className="flex items-start gap-3 rounded-card bg-line-subtle/60 px-3 py-2">
+                    { Icon: GraduationCap, key: "preview1" },
+                    { Icon: Compass, key: "preview2" },
+                    { Icon: ListChecks, key: "preview3" },
+                    { Icon: Trophy, key: "preview4" },
+                    { Icon: Award, key: "preview5" }
+                  ].map(({ Icon, key }, i) => (
+                    <li key={key} className="flex items-start gap-3 rounded-card bg-line-subtle/60 px-3 py-2">
                       <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-brand text-[10.5px] font-bold ring-1 ring-line">
                         {i + 1}
                       </span>
                       <span>
-                        <span className="block text-[13px] font-semibold text-ink">{title}</span>
-                        <span className="block text-[11.5px] text-ink-muted leading-snug">{body}</span>
+                        <span className="block text-[13px] font-semibold text-ink">{t(`landing.${key}.title`)}</span>
+                        <span className="block text-[11.5px] text-ink-muted leading-snug">{t(`landing.${key}.body`)}</span>
                       </span>
                       <Icon size={16} className="ml-auto text-ink-muted shrink-0 mt-1" />
                     </li>

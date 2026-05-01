@@ -421,12 +421,44 @@ export function getNextAction(args: {
   }
 
   if (step === "allotted" && focus) {
+    const alloc = allocations[focus.courseId];
+    if (alloc?.status === "float") {
+      return {
+        id: "trackScrutiny",
+        titleKey: "next.floatPending.title",
+        bodyKey: "next.floatPending.body",
+        ctaKey: "next.floatPending.cta",
+        href: "/applications",
+        tone: "info"
+      };
+    }
+    if (alloc?.status === "decline" || alloc?.status === "auto_cancelled") {
+      return {
+        id: "discoverCourses",
+        titleKey: "next.declined.title",
+        bodyKey: "next.declined.body",
+        ctaKey: "next.declined.cta",
+        href: "/discover",
+        tone: "warning"
+      };
+    }
+    if (alloc?.status === "freeze") {
+      return {
+        id: "payAdmissionFee",
+        titleKey: "next.payAdmissionFee.title",
+        bodyKey: "next.payAdmissionFee.body",
+        ctaKey: "next.payAdmissionFee.cta",
+        href: `/payment/${focus.courseId}`,
+        tone: "success"
+      };
+    }
+    // pending or no allocation status yet
     return {
-      id: "payAdmissionFee",
-      titleKey: "next.payAdmissionFee.title",
-      bodyKey: "next.payAdmissionFee.body",
-      ctaKey: "next.payAdmissionFee.cta",
-      href: `/payment/${focus.courseId}`,
+      id: "respondToOffer",
+      titleKey: "next.respondToOffer.title",
+      bodyKey: "next.respondToOffer.body",
+      ctaKey: "next.respondToOffer.cta",
+      href: `/allotment/${focus.courseId}`,
       tone: "success"
     };
   }

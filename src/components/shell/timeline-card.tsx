@@ -21,7 +21,6 @@ import type { TimelineEntry, TimelineEntryKind } from "@/domain/types";
 const ICONS: Record<TimelineEntryKind, React.ComponentType<{ size?: number }>> = {
   registered: UserCheck,
   profileCompleted: ClipboardCheck,
-  applied: Send,
   submitted: Send,
   underScrutiny: ClipboardList,
   discrepancyRaised: AlertTriangle,
@@ -36,7 +35,6 @@ const ICONS: Record<TimelineEntryKind, React.ComponentType<{ size?: number }>> =
 const TONE: Record<TimelineEntryKind, string> = {
   registered: "bg-brand-50 text-brand",
   profileCompleted: "bg-brand-50 text-brand",
-  applied: "bg-brand-50 text-brand",
   submitted: "bg-brand-50 text-brand",
   underScrutiny: "bg-info-subtle text-info-ink",
   discrepancyRaised: "bg-warning-subtle text-warning-ink",

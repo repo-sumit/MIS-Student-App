@@ -28,22 +28,26 @@ const TONE: Record<ApplicationLifecycle, "neutral" | "info" | "success" | "warni
   admissionConfirmed: "success"
 };
 
-function timeAgo(iso?: string): string {
-  if (!iso) return "";
-  const diff = Math.max(0, Date.now() - new Date(iso).getTime());
-  const m = Math.floor(diff / 60000);
-  if (m < 1) return "just now";
-  if (m < 60) return `${m} min ago`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `${h} hr ago`;
-  const d = Math.floor(h / 24);
-  return `${d} day${d > 1 ? "s" : ""} ago`;
+function useTimeAgo() {
+  const { t } = useLocale();
+  return (iso?: string): string => {
+    if (!iso) return "";
+    const diff = Math.max(0, Date.now() - new Date(iso).getTime());
+    const m = Math.floor(diff / 60000);
+    if (m < 1) return t("time.justNow");
+    if (m < 60) return t("time.minAgo", { n: m });
+    const h = Math.floor(m / 60);
+    if (h < 24) return t("time.hrAgo", { n: h });
+    const d = Math.floor(h / 24);
+    return d === 1 ? t("time.dayAgo", { n: d }) : t("time.daysAgo", { n: d });
+  };
 }
 
 export default function ApplicationsPage() {
   const { t, pick } = useLocale();
   const { list } = useApplications();
   const { allocations } = useAllocation();
+  const timeAgo = useTimeAgo();
 
   if (list.length === 0) {
     return (

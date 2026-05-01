@@ -14,12 +14,12 @@ import { useToast } from "@/providers/toast-provider";
 import { hasEnoughProfile } from "@/services/status";
 import { cn } from "@/components/ui/cn";
 
-const STEP_LABELS: { key: number; label: string }[] = [
-  { key: 1, label: "Personal" },
-  { key: 2, label: "Address" },
-  { key: 3, label: "Academics" },
-  { key: 4, label: "Claims" },
-  { key: 5, label: "Bank" }
+const STEP_LABELS: { key: number; labelKey: string }[] = [
+  { key: 1, labelKey: "profile.step1" },
+  { key: 2, labelKey: "profile.step2" },
+  { key: 3, labelKey: "profile.step3" },
+  { key: 4, labelKey: "profile.step4" },
+  { key: 5, labelKey: "profile.step5" }
 ];
 
 export function ProfileStepShell({
@@ -103,7 +103,7 @@ export function ProfileStepShell({
                       <span className={cn("flex h-6 w-6 items-center justify-center rounded-full border", active ? "border-brand bg-brand text-white" : reached ? "border-success bg-success text-white" : "border-line bg-white text-ink-subtle")}>
                         {reached && !active ? <Check size={12} strokeWidth={3} /> : s.key}
                       </span>
-                      {s.label}
+                      <span className="truncate">{t(s.labelKey)}</span>
                     </li>
                   );
                 })}

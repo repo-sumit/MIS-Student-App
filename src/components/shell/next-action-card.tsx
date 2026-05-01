@@ -21,7 +21,7 @@ export function NextActionCard({ action }: { action: NextAction }) {
       <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10" />
       <div className="absolute -left-12 -bottom-12 h-44 w-44 rounded-full bg-white/10" />
       <div className="relative">
-        <div className="text-[10.5px] font-bold tracking-[0.16em] uppercase text-white/80">Next step</div>
+        <div className="text-[10.5px] font-bold tracking-[0.16em] uppercase text-white/80">{t("dashboard.nextStep")}</div>
         <h2 className="mt-1 text-[20px] sm:text-[22px] font-bold leading-snug">{t(action.titleKey)}</h2>
         <p className="mt-1 text-[13.5px] text-white/85 leading-relaxed">{t(action.bodyKey)}</p>
         <div className="mt-4">
@@ -47,26 +47,27 @@ export function ApplicationSummaryCard({
   collegeName?: string;
   step: string;
 }) {
+  const { t } = useLocale();
   return (
     <Card padded>
-      <div className="text-eyebrow">Active application</div>
+      <div className="text-eyebrow">{t("dashboard.activeApplication")}</div>
       {appNumber ? (
         <>
           <div className="mt-1.5 text-[14px] font-bold text-ink truncate">{courseTitle || "—"}</div>
           <div className="text-[12px] text-ink-muted truncate">{collegeName || "—"}</div>
           <div className="mt-3 grid grid-cols-2 gap-2">
             <div className="rounded-card bg-line-subtle/60 px-3 py-2">
-              <div className="text-[10px] font-semibold uppercase tracking-wider text-ink-subtle">App. number</div>
+              <div className="text-[10px] font-semibold uppercase tracking-wider text-ink-subtle">{t("applications.appNumber")}</div>
               <div className="text-[12.5px] font-bold text-ink truncate">{appNumber}</div>
             </div>
             <div className="rounded-card bg-line-subtle/60 px-3 py-2">
-              <div className="text-[10px] font-semibold uppercase tracking-wider text-ink-subtle">Stage</div>
+              <div className="text-[10px] font-semibold uppercase tracking-wider text-ink-subtle">{t("dashboard.stageLabel")}</div>
               <div className="text-[12.5px] font-bold text-ink">{step}</div>
             </div>
           </div>
         </>
       ) : (
-        <p className="mt-1 text-[13px] text-ink-muted">You haven't submitted an application yet. Pick a course to get started.</p>
+        <p className="mt-1 text-[13px] text-ink-muted">{t("dashboard.noActiveApplication")}</p>
       )}
     </Card>
   );

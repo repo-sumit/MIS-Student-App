@@ -46,7 +46,16 @@ export default function AllotmentPage() {
     }
   }, [application, allocation, courseId, profile, setAllocation, acknowledgeMerit, markAllocationCreated]);
 
-  if (!offering) return null;
+  if (!offering) {
+    return (
+      <PageShell title={t("errors.notFoundTitle")} showBack showTabs={false} size="medium" variant="compact">
+        <Card padded>
+          <CardTitle>{t("errors.notFoundTitle")}</CardTitle>
+          <CardSubtitle>{t("errors.notFoundBody")}</CardSubtitle>
+        </Card>
+      </PageShell>
+    );
+  }
 
   // Waiting state — submitted but no allocation yet.
   if (!allocation) {

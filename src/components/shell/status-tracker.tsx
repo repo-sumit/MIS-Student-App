@@ -24,7 +24,7 @@ export function StatusTracker({ currentStep, subLabel }: { currentStep: StatusSt
     <div>
       <div className="flex items-baseline justify-between mb-3">
         <div>
-          <div className="text-[10px] uppercase tracking-[0.16em] font-bold text-ink-muted">Application status</div>
+          <div className="text-[10px] uppercase tracking-[0.16em] font-bold text-ink-muted">{t("dashboard.applicationStatus")}</div>
           <div className="text-[14px] font-bold text-ink">{t(`stages.${currentStep}`)}</div>
         </div>
         {subLabel && <div className="text-[11.5px] text-ink-subtle">{subLabel}</div>}
